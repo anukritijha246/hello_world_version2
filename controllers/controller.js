@@ -104,13 +104,13 @@ exports.add_comment = function (req, res) {
 
 
 exports.show_posts = function (req , res) {
-    Post.find({}).then(function (posts) {
+    Post.find({flag:true}).then(function (posts) {
     res.send(posts);
     });
    };
 
 exports.show_posts_by_company = function (req , res) {
-       Post.find({companyid:req.params.cid}).then(function (posts) {
+       Post.find({companyid:req.params.cid,flag:true}).then(function (posts) {
        res.send(posts);
        });
       };
@@ -127,7 +127,7 @@ exports.search = function (req , res) {
 };
 
 exports.show_post = function (req, res) {
-    Post.findById(req.params.id, function (err, post) {
+    Post.find({_id:req.params.id,flag:true}, function (err, post) {
         if (err) return next(err);
         res.send(post);
     })
@@ -168,6 +168,40 @@ exports.show_users_to_admin = function (req , res) {
 
     User.find({companyname:company_name},function (err,users) {
        res.send(users);
+    });
+};
+
+exports.deletepost_admin = function (req , res) {
+    var x=req.params.cid;
+    var aid=req.params.aid;
+    var company_name;
+    switch(x){
+        case '1':{company_name="BDL"; break;}
+        case '2':{company_name="HAL"; break;}
+        case '3':{company_name="BHEL"; break;}
+        case '4':{company_name="GS"; break;}
+        default:res.send("admin not identified");
+    }
+
+    Post.deleteOne({_id:aid,companyid:x},function (err,post) {
+        res.send(aid+" deleted ");
+    });
+};
+
+exports.deleteuser_admin = function (req , res) {
+    var x=req.params.cid;
+    var eid=req.params.eid;
+    var company_name;
+    switch(x){
+        case '1':{company_name="BDL"; break;}
+        case '2':{company_name="HAL"; break;}
+        case '3':{company_name="BHEL"; break;}
+        case '4':{company_name="GS"; break;}
+        default:res.send("admin not identified");
+    }
+
+    User.deleteOne({eid:eid,companyname:company_name},function (err,post) {
+        res.send(eid+" deleted ");
     });
 };
 

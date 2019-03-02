@@ -34,7 +34,14 @@ router.get('/about', function (req, res) {
 
   //router.get('/:id', controller.user_details);
 
+//////////////admin
   router.get('/:cid/show_users_to_admin/',controller.show_users_to_admin);
+
+  router.get('/:cid/:aid/deletepost_admin/',controller.deletepost_admin);
+
+  router.get('/:cid/:eid/deleteuser_admin/',controller.deleteuser_admin);
+
+
 
 
 
