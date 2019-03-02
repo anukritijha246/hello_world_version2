@@ -1,6 +1,7 @@
 const Comment = require('../models/Comments');
 const Post = require('../models/Post');
 const Log = require('../models/log');
+const User=require('../models/user');
 //Simple version, without validation or sanitation
 // exports.test = function (req, res) {
 //     res.send('Greetings from the Test controller!');
@@ -152,6 +153,22 @@ exports.show_log = function (req , res) {
         res.send(logs);
     });
 
+};
+
+exports.show_users_to_admin = function (req , res) {
+    var x=req.params.cid;
+    var company_name;
+    switch(x){
+        case '1':{company_name="BDL"; break;}
+        case '2':{company_name="HAL"; break;}
+        case '3':{company_name="BHEL"; break;}
+        case '4':{company_name="GS"; break;}
+        default:res.send("admin not identified");
+    }
+
+    User.find({companyname:company_name},function (err,users) {
+       res.send(users);
+    });
 };
 
 // exports.comments_by_articleid = function (req , res) {

@@ -34,6 +34,7 @@ router.get('/about', function (req, res) {
 
   //router.get('/:id', controller.user_details);
 
+  router.get('/:cid/show_users_to_admin/',controller.show_users_to_admin);
 
 
 
