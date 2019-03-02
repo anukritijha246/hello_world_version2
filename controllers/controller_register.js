@@ -8,9 +8,10 @@ var User = require('../models/user');//User collection with user.js schema
 //LOGIN FUNCTION
 
 exports.login=function(req, res) {
+  var email = req.body.email;
+  var password = req.body.password;
   User.getUserByEmail(email, function(err, user){ //getUserByEmail() function is defined in user.js file
-    var email = req.body.email;
-    var password = req.body.password;
+
       if(err)
       {console.log(err);
         throw err;}
