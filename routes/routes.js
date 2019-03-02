@@ -41,7 +41,11 @@ router.get('/about', function (req, res) {
 
   router.get('/:cid/:eid/deleteuser_admin/',controller.deleteuser_admin);
 
+  router.get('/:cid/:aid/acceptpost_admin/',controller.acceptpost_admin);
 
+  router.get('/:cid/:aid/rejectpost_admin/',controller.rejectpost_admin);
+
+  router.get('/:cid/show_posts_tobereveiwed_admin',controller.show_posts_tobereveiwed_admin);
 
 
 

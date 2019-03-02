@@ -174,15 +174,6 @@ exports.show_users_to_admin = function (req , res) {
 exports.deletepost_admin = function (req , res) {
     var x=req.params.cid;
     var aid=req.params.aid;
-    var company_name;
-    switch(x){
-        case '1':{company_name="BDL"; break;}
-        case '2':{company_name="HAL"; break;}
-        case '3':{company_name="BHEL"; break;}
-        case '4':{company_name="GS"; break;}
-        default:res.send("admin not identified");
-    }
-
     Post.deleteOne({_id:aid,companyid:x},function (err,post) {
         res.send(aid+" deleted ");
     });
@@ -204,6 +195,32 @@ exports.deleteuser_admin = function (req , res) {
         res.send(eid+" deleted ");
     });
 };
+
+exports.acceptpost_admin = function (req , res) {
+    var x=req.params.cid;
+    var aid=req.params.aid;
+
+    Post.updateOne({_id:aid,companyid:x},{$set:{flag:true}},function (err,post) {
+        res.send(aid+" approved by admin ");
+    });
+};
+
+exports.rejectpost_admin = function (req , res) {
+    var x=req.params.cid;
+    var aid=req.params.aid;
+    Post.deleteOne({_id:aid,companyid:x,flag:false},function (err,post) {
+        {res.send(aid+" was not approved ");}
+    });
+};
+
+exports.show_posts_tobereveiwed_admin = function (req , res) {
+    var x=req.params.cid;
+    Post.find({flag:false,companyid:x}).then(function (posts) {
+        res.send(posts);
+    });
+};
+
+
 
 // exports.comments_by_articleid = function (req , res) {
 //     Comment.find({articleid: req.params.id}).then(function (comments) {
