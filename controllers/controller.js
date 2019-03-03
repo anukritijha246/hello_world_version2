@@ -57,8 +57,8 @@ exports.post_create = function (req, res) {
             companyid: req.body.companyid,
             upvote: req.body.upvote,
             uploadfile:uploadfile,
-            time:new Date(Date.now()).toTimeString(),
-            date:new Date(Date.now()).toDateString()
+            time:new Date(Date.now()).toTimeString(),//new time
+            date:new Date(Date.now()).toDateString()//new date
 
         }
     );
@@ -163,7 +163,7 @@ exports.search = function (req , res) {
     var searchitem=req.body.searchitem;
     var keywords=searchitem.split(" ");
     console.log(searchitem);
-    Post.find({tag:{$in: keywords}}).sort({upvote:-1}).then(function (posts) {
+    Post.find({tag:{$in: keywords}}).sort({upvote:-1}).then(function (posts) {//sorting done
         res.send(posts);
     });
 
@@ -203,7 +203,7 @@ exports.show_users_to_admin = function (req , res) {
     var x=req.params.cid;
     var company_name;
     switch(x){
-        case '1':{company_name="BHARAT DYNAMICS LIMITED (BDL)"; break;}
+        case '1':{company_name="BHARAT DYNAMICS LIMITED (BDL)"; break;}   //name changed
         case '2':{company_name="HINDUSTAN AERONAUTICS LIMITED (HAL)"; break;}
         case '3':{company_name="BHARAT ELECTRONICS LIMITED (BEL)"; break;}
         case '4':{company_name="GOA SHIPYARD LIMITED (GSL)"; break;}
@@ -228,7 +228,7 @@ exports.deleteuser_admin = function (req , res) {
     var eid=req.params.eid;
     var company_name;
     switch(x){
-        case '1':{company_name="BHARAT DYNAMICS LIMITED (BDL)"; break;}
+        case '1':{company_name="BHARAT DYNAMICS LIMITED (BDL)"; break;}  //new
         case '2':{company_name="HINDUSTAN AERONAUTICS LIMITED (HAL)"; break;}
         case '3':{company_name="BHARAT ELECTRONICS LIMITED (BEL)"; break;}
         case '4':{company_name="GOA SHIPYARD LIMITED (GSL)"; break;}
