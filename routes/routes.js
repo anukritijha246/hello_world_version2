@@ -1,11 +1,15 @@
 const express = require('express');
 const router = express.Router();
-
+const multer=require('multer');
 // Require the controllers WHICH WE DID NOT CREATE YET!!
 const controller = require('../controllers/controller');
-
+//const upload=multer({dest:'./uploads'});
 //router.get('/:id', product_controller.product_details);
 // a simple test url to check that all of our files are communicating correctly.
+const upload =  multer({
+    dest:'./uploads',
+    limits: { fileSize:1000000},
+}).single('uploadfile');
 
 router.get('/about', function (req, res) {
     res.send('Welocme to xyz');
@@ -14,7 +18,7 @@ router.get('/about', function (req, res) {
   //router.post('/user_create', controller.user_create);
   router.post('/search/',controller.search);
 
-  router.post('/post_create/', controller.post_create);
+  router.post('/post_create/',upload, controller.post_create);
 
   router.post('/:id/add_comment', controller.add_comment);
 
@@ -29,6 +33,8 @@ router.get('/about', function (req, res) {
   router.get('/:id/comments_by_articleid/', controller.comments_by_articleid);
 
   router.get('/show_log', controller.show_log);
+
+   router.get('/:aid/upvotepost', controller.upvotepost);
 
   //router.put('/:id/add_comment', controller.add_comment);
 
@@ -46,6 +52,8 @@ router.get('/about', function (req, res) {
   router.get('/:cid/:aid/rejectpost_admin/',controller.rejectpost_admin);
 
   router.get('/:cid/show_posts_tobereveiwed_admin',controller.show_posts_tobereveiwed_admin);
+
+
 
 
 

@@ -2,6 +2,7 @@ const Comment = require('../models/Comments');
 const Post = require('../models/Post');
 const Log = require('../models/log');
 const User=require('../models/user');
+
 //Simple version, without validation or sanitation
 // exports.test = function (req, res) {
 //     res.send('Greetings from the Test controller!');
@@ -39,6 +40,14 @@ exports.post_create = function (req, res) {
     })
 };*/
 exports.post_create = function (req, res) {
+    if(req.file)
+    {  console.log("uploading file");
+        var uploadfile=req.file.filename;
+    }
+    else {
+        console.log("no file uploaded");
+        var uploadfile='nofile.pdf';
+    }
     let post = new Post(
         {
             title: req.body.title,
@@ -46,9 +55,11 @@ exports.post_create = function (req, res) {
             username: req.body.username,
             companyid: req.body.companyid,
             upvote: req.body.upvote,
+            uploadfile:uploadfile
 
         }
     );
+
     var tagString=req.body.tag;
     var tags= tagString.split(",");
     for(var i=0;i<tags.length;i++)
@@ -74,6 +85,22 @@ exports.post_create = function (req, res) {
     })
 };
 
+exports.upvotepost = function (req , res) {
+    var aid=req.params.aid;
+    //var eid=req.params.eid;
+    Post.findById({_id:aid.toString()}, function(err,post)
+    {
+        Post.updateOne({_id:aid.toString()},{$set:{upvote:post.upvote+1}}, function(err, res)
+        {console.log("upvote post done");});
+
+    });
+    Post.findById(req.params.aid, function(err,post)
+    {res.send(post);
+    });
+
+
+
+};
 
 exports.add_comment = function (req, res) {
     let comment = new Comment(
@@ -101,7 +128,6 @@ exports.add_comment = function (req, res) {
     })
 
 };
-
 
 exports.show_posts = function (req , res) {
     Post.find({flag:true}).then(function (posts) {
@@ -219,6 +245,8 @@ exports.show_posts_tobereveiwed_admin = function (req , res) {
         res.send(posts);
     });
 };
+
+
 
 
 
