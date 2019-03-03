@@ -48,6 +48,7 @@ exports.post_create = function (req, res) {
         console.log("no file uploaded");
         var uploadfile='nofile.pdf';
     }
+
     let post = new Post(
         {
             title: req.body.title,
@@ -55,7 +56,9 @@ exports.post_create = function (req, res) {
             username: req.body.username,
             companyid: req.body.companyid,
             upvote: req.body.upvote,
-            uploadfile:uploadfile
+            uploadfile:uploadfile,
+            time:new Date(Date.now()).toTimeString(),
+            date:new Date(Date.now()).toDateString()
 
         }
     );
@@ -73,9 +76,12 @@ exports.post_create = function (req, res) {
         }
         res.send('post Created successfully')
     });
-    var logItem=req.body.username + " created a new post";
+    var date=comment.date;
+    var time=comment.time;
+    var logItem=req.body.username + " created a new post on date :" + date + "at time "+ time;
     let log = new Log(
         {
+            cid:req.body.companyid,
             item:logItem
         });
     log.save(function (err) {
@@ -83,6 +89,8 @@ exports.post_create = function (req, res) {
             return next(err);
         }
     })
+
+
 };
 
 exports.upvotepost = function (req , res) {
@@ -98,8 +106,6 @@ exports.upvotepost = function (req , res) {
     {res.send(post);
     });
 
-
-
 };
 
 exports.add_comment = function (req, res) {
@@ -107,18 +113,30 @@ exports.add_comment = function (req, res) {
         {
             articleid: req.params.id,
             comment: req.body.comment,
-            user: req.body.user
+            user: req.body.user,
+            time:new Date(Date.now()).toTimeString(),
+            date:new Date(Date.now()).toDateString()
         }
     );
     comment.save(function (err) {
         if (err) {
+
             return next(err);
         }
         res.send('comment added successfully')
     });
-    var logItem=req.body.user + " Commented on " + req.params.id;
+    var companyId;
+
+    Post.findById({_id:req.params.id}).then(function (posts) {
+       companyId=posts.companyid;
+    });
+
+    var date=comment.date;
+    var time=comment.time;
+    var logItem=req.body.user + " Commented on " + req.params.id+" at time: " + time + "date" +date;
     let log = new Log(
         {
+            cid:companyId,
             item:logItem
         });
     log.save(function (err) {
@@ -128,26 +146,25 @@ exports.add_comment = function (req, res) {
     })
 
 };
-
 exports.show_posts = function (req , res) {
-    Post.find({flag:true}).then(function (posts) {
+    Post.find({flag:true}).sort({upvote:-1}).then(function (posts) {
     res.send(posts);
     });
+
    };
 
 exports.show_posts_by_company = function (req , res) {
-       Post.find({companyid:req.params.cid,flag:true}).then(function (posts) {
+       Post.find({companyid:req.params.cid,flag:true}).sort({upvote:-1}).then(function (posts) {
        res.send(posts);
        });
       };
 
 exports.search = function (req , res) {
-
     var searchitem=req.body.searchitem;
     var keywords=searchitem.split(" ");
     console.log(searchitem);
-    Post.find({tag:{$in: keywords} }, function (err, post) {
-        res.send(post);
+    Post.find({tag:{$in: keywords}}).sort({upvote:-1}).then(function (posts) {
+        res.send(posts);
     });
 
 };
@@ -156,6 +173,8 @@ exports.show_post = function (req, res) {
     Post.find({_id:req.params.id,flag:true}, function (err, post) {
         if (err) return next(err);
         res.send(post);
+        console.log(post);
+
     })
 };
 
@@ -175,20 +194,19 @@ exports.comments_by_articleid = function(req, res, next) {
 };
 
 exports.show_log = function (req , res) {
-    Log.find({}).then(function (logs) {
+    Log.find({cid:req.params.cid}).then(function (logs) {
         res.send(logs);
     });
-
 };
 
 exports.show_users_to_admin = function (req , res) {
     var x=req.params.cid;
     var company_name;
     switch(x){
-        case '1':{company_name="BDL"; break;}
-        case '2':{company_name="HAL"; break;}
-        case '3':{company_name="BHEL"; break;}
-        case '4':{company_name="GS"; break;}
+        case '1':{company_name="BHARAT DYNAMICS LIMITED (BDL)"; break;}
+        case '2':{company_name="HINDUSTAN AERONAUTICS LIMITED (HAL)"; break;}
+        case '3':{company_name="BHARAT ELECTRONICS LIMITED (BEL)"; break;}
+        case '4':{company_name="GOA SHIPYARD LIMITED (GSL)"; break;}
         default:res.send("admin not identified");
     }
 
@@ -210,10 +228,10 @@ exports.deleteuser_admin = function (req , res) {
     var eid=req.params.eid;
     var company_name;
     switch(x){
-        case '1':{company_name="BDL"; break;}
-        case '2':{company_name="HAL"; break;}
-        case '3':{company_name="BHEL"; break;}
-        case '4':{company_name="GS"; break;}
+        case '1':{company_name="BHARAT DYNAMICS LIMITED (BDL)"; break;}
+        case '2':{company_name="HINDUSTAN AERONAUTICS LIMITED (HAL)"; break;}
+        case '3':{company_name="BHARAT ELECTRONICS LIMITED (BEL)"; break;}
+        case '4':{company_name="GOA SHIPYARD LIMITED (GSL)"; break;}
         default:res.send("admin not identified");
     }
 

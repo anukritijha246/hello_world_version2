@@ -8,7 +8,9 @@ const PostSchema = new mongoose.Schema({
     upvote: {type:Number, default: 0 },
     tag:{type:Array},
     flag:{type:Boolean ,default:0},
-    uploadfile:String
+    uploadfile:String,
+    time:String,
+    date:String
 });
 
 module.exports = mongoose.model("Post", PostSchema);
